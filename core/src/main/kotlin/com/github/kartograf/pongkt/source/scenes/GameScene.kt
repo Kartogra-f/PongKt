@@ -2,19 +2,17 @@ package com.github.kartograf.pongkt.source.scenes
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.math.Vector2
 import com.github.kartograf.pongkt.source.entities.*
-import com.github.kartograf.pongkt.source.utils.Utils.assetManager
-import com.github.kartograf.pongkt.source.utils.Utils.pixmap
-import com.github.kartograf.pongkt.source.utils.Utils.region
-import com.github.kartograf.pongkt.source.utils.Utils.texture
+import com.github.kartograf.pongkt.source.utils.AssetManager
+import com.github.kartograf.pongkt.source.utils.AssetManager.region
+import com.github.kartograf.pongkt.source.utils.Utils.createFlashingText
+import com.github.kartograf.pongkt.source.utils.WINDOW_HEIGHT
 import com.github.kartograf.pongkt.source.utils.WINDOW_WIDTH
 import ktx.app.KtxScreen
-import ktx.assets.*
-import ktx.freetype.loadFreeTypeFont
+import ktx.assets.disposeSafely
 import ktx.graphics.use
 import space.earlygrey.shapedrawer.ShapeDrawer
 
@@ -30,37 +28,61 @@ class GameScreen: KtxScreen {
 
     // GameScreen Variables
     // ==================================================== //
-    private val font = assetManager.load<BitmapFont>("fonts/m5x7.ttf").also {
-        it.finishLoading()
-    }
     private var batch = PolygonSpriteBatch()
+    private val camera = OrthographicCamera().also {
+        it.setToOrtho(false, 1280F, 700F)
+    }
     private val shapeDrawer = ShapeDrawer(this.batch, region)
     private var currentState = GameState.IDLE
 
     // Entities
     // ==================================================== //
-    private val player = Player.new(initialPosition = Vector2(15F, 270F), dimensions = Vector2(10F, 120F), speed = Vector2(0F, 500F))
-    private val ai = AI.new(initialPosition = Vector2(WINDOW_WIDTH.toFloat() - 20, 280F), dimensions = Vector2(10F, 120F), speed = Vector2(0F, 500F))
-    private val ball = Ball.new(initialPosition = Vector2(632F, 335F), dimensions = Vector2(15F, 15F), speed = Vector2(300F, 300F))
+    private val player = Player.new(initialPosition = Vector2(15F, 300F), dimensions = Vector2(10F, 120F), speed = Vector2(0F, 500F))
+    private val ai = AI.new(initialPosition = Vector2(WINDOW_WIDTH.toFloat() - 20, 300F), dimensions = Vector2(10F, 120F), speed = Vector2(0F, 500F))
+    private val ball = Ball.new(initialPosition = Vector2(WINDOW_WIDTH.toFloat()/2, 370F), dimensions = Vector2(15F, 15F), speed = Vector2(300F, 300F))
     private val entities: List<Any> = listOf(player, ai, ball)
 
     // Game Functions
    // ==================================================== //
-    private fun update(delta: Float) {
-        this.entities.filterIsInstance<Dynamics>().forEach { dynamics -> dynamics.update(delta) }
-        this.exit()
+    override fun show() {
+        AssetManager.loadAssets()
+        AssetManager.makeFont()
     }
 
     override fun render(delta: Float) {
-
+        camera.update()
         this.batch.use {
+            it.projectionMatrix = camera.combined
+
+            // Draw entities.
             this.entities.filterIsInstance<Drawable>().forEach { drawable -> this.shapeDrawer.filledRectangle(drawable.rectangle) }
-            this.font.asset.draw(it, "Hello", 50F, 50F)
+
+            when (currentState) {
+                GameState.IDLE -> {
+                    createFlashingText(it, AssetManager.standardGameFont, "PRESS SPACE TO START!", Vector2(WINDOW_WIDTH.toFloat()/2 - 110, WINDOW_HEIGHT.toFloat()/2 + 150))
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                        currentState = GameState.SERVE
+                    }
+                }
+                GameState.SERVE -> {
+                    createFlashingText(it, AssetManager.standardGameFont, "PRESS SPACE TO SERVE!", Vector2(WINDOW_WIDTH.toFloat()/2 - 110, WINDOW_HEIGHT.toFloat()/2 + 150))
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                        currentState = GameState.START
+                    }
+                }
+
+                GameState.START -> {
+                    // Update entities.
+                    this.entities.filterIsInstance<Dynamics>().forEach { dynamics -> dynamics.update(delta) }
+                }
+                else -> {}
+            }
         }
 
-        this.update(delta)
+        this.exit()
     }
 
+    // If ESC key is pressed, quit game.
     private fun exit() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit()
@@ -71,9 +93,6 @@ class GameScreen: KtxScreen {
     // ==================================================== //
     override fun dispose() {
         this.batch.dispose()
-        pixmap.dispose()
-        texture.dispose()
-        font.asset.dispose()
-        assetManager.unloadSafely("fonts/m5x7.ttf")
+        AssetManager.disposeSafely()
     }
 }
