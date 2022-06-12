@@ -4,6 +4,7 @@ package com.github.kartograf.pongkt.lwjgl3
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
+import com.badlogic.gdx.graphics.Color
 import com.github.kartograf.pongkt.Game
 import com.github.kartograf.pongkt.source.utils.WINDOW_HEIGHT
 import com.github.kartograf.pongkt.source.utils.WINDOW_TITLE

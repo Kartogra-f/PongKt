@@ -1,6 +1,7 @@
 package com.github.kartograf.pongkt.source.utils
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.math.Vector2
@@ -14,5 +15,10 @@ object Utils {
         if (blink == 0F) {
             font.draw(batch, text, position.x, position.y)
         }
+    }
+
+    fun changeBackgroundColor() {
+        Gdx.gl.glClearColor(.128F, .128F, .128F, 1F)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     }
 }
