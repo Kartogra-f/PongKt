@@ -10,7 +10,7 @@ import com.github.kartograf.pongkt.source.utils.AssetManager
 import com.github.kartograf.pongkt.source.utils.WINDOW_WIDTH
 import kotlin.math.pow
 
-// Defining default implementations.
+// Defining default implementations for composition.
 class CollidableImpl() : Collidable {
     override fun checkCollision(collider: Rectangle, collidesWith: Rectangle) : Boolean {
         return Intersector.overlaps(collider, collidesWith)
@@ -76,6 +76,7 @@ class BallControllerImpl() : BallController {
     }
 }
 
+// Main composition implementation that is used as a base template for entities.
 class DynamicsImpl(private var isBall: Boolean, initialPosition: Vector2, dimensions: Vector2, override var speed: Vector2) : Dynamics {
     override var position: Vector2 = initialPosition
     override var velocity: Vector2 = Vector2.Zero

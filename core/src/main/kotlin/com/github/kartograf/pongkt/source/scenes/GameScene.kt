@@ -55,7 +55,7 @@ class GameScreen: KtxScreen {
    // ==================================================== //
     override fun show() {
         AssetManager.loadAssets()
-        AssetManager.makeFont()
+        AssetManager.makeAssets()
     }
 
     // Update entities.
@@ -80,7 +80,7 @@ class GameScreen: KtxScreen {
         this.player.playerMovement(delta, this.player.rectangle, this.player.velocity, this.player.speed)
     }
 
-    // Render and call our update function. All game logic belong here.
+    // Render and call our update function.
     override fun render(delta: Float) {
         changeBackgroundColor()
         camera.update()

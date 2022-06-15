@@ -16,25 +16,30 @@ import ktx.freetype.registerFreeTypeFontLoaders
 
 object AssetManager : Disposable {
 
-    val pixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888).also {
+    // Pixmap and Texture is used to create a texture that will later on be used by our Shape Drawer to
+    // draw our rectangles that entities use. Same with region.
+    private val pixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888).also {
         it.setColor(Color.WHITE)
         it.drawPixel(0, 0)
     }
 
-    val texture = Texture(this.pixmap)
+    private val texture = Texture(this.pixmap)
     val region = TextureRegion(this.texture, 0, 0, 1,1)
 
+    // Creating our manager and register all necessary loads to load up TTF fonts.
     var manager: AssetManager = AssetManager().also {
         it.registerFreeTypeFontLoaders()
     }
         private set
 
+    // Late initialisation variables for our assets.
     lateinit var standardGameFont: BitmapFont
     lateinit var standardGameFontScore: BitmapFont
     lateinit var padHit: Sound
     lateinit var wallHit: Sound
     lateinit var scored: Sound
 
+    // Load our assets and give different parameters if required.
     fun loadAssets() {
         manager.loadFreeTypeFont(STANDARD_FONT) {
             size = 32
@@ -51,7 +56,8 @@ object AssetManager : Disposable {
         manager.finishLoading()
     }
 
-    fun makeFont() {
+    // Create and populate our assets to the variables.
+    fun makeAssets() {
         standardGameFont = manager.getAsset(STANDARD_FONT)
         standardGameFontScore = manager.getAsset(STANDARD_FONT_SCORE)
         padHit = manager.getAsset(PAD_HIT)
@@ -59,6 +65,7 @@ object AssetManager : Disposable {
         scored = manager.getAsset(SCORED)
     }
 
+    // Dispose of everything on game close.
     override fun dispose() {
         this.standardGameFont.dispose()
         this.standardGameFontScore.dispose()

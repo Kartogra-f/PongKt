@@ -2,6 +2,7 @@ package com.github.kartograf.pongkt.source.entities
 
 import com.badlogic.gdx.math.Vector2
 
+// Player Entity creation with allocated delegates.
 class Player(dynamicsImpl: Dynamics, playableImpl: Playable) : Drawable, Dynamics by dynamicsImpl, Playable by playableImpl {
 
     companion object {
@@ -11,6 +12,7 @@ class Player(dynamicsImpl: Dynamics, playableImpl: Playable) : Drawable, Dynamic
     }
 }
 
+// AI Entity creation with allocated delegates.
 class AI(dynamicsImpl: Dynamics, aiControllerImpl: AIController) : Drawable, Dynamics by dynamicsImpl, AIController by aiControllerImpl {
 
     companion object {
@@ -20,6 +22,7 @@ class AI(dynamicsImpl: Dynamics, aiControllerImpl: AIController) : Drawable, Dyn
     }
 }
 
+// Ball Entity creation with allocated delegates.
 class Ball(dynamicsImpl: Dynamics, collidableImpl: Collidable, ballControlerImpl: BallController) : Drawable, Dynamics by dynamicsImpl, Collidable by collidableImpl, BallController by ballControlerImpl{
 
     companion object {
