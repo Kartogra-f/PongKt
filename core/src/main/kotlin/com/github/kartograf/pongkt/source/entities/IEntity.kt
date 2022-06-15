@@ -30,7 +30,7 @@ interface Playable {
 }
 
 interface AIController {
-    fun aiMovement(delta: Float, rectangle: Rectangle, velocity: Vector2, speed: Vector2, follows: Ball)
+    fun aiMovement(delta: Float, rectangle: Rectangle, velocity: Vector2, speed: Vector2, ball: Ball)
 }
 
 interface BallController {
@@ -48,7 +48,7 @@ interface Collidable {
 
 interface Dynamics : Shape, Position, Velocity {
     override var velocity: Vector2
-    override val speed: Vector2
+    override var speed: Vector2
 
     fun update(delta: Float)
     fun keepInBoundary()
